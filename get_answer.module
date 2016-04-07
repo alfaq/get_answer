@@ -35,14 +35,14 @@ function get_answer_ajax($entity_id){
         $correct_num = $entity->field_correct_answer['und'][0]['value'];
         break;
     }
-    // создание объекта JSON. Объект будет содержать свойство с именем “products” которое задается переменной $items.
+    // СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° JSON. СњР±СЉРµРєС‚ Р±СѓРґРµС‚ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРІРѕР№СЃС‚РІРѕ СЃ РёРјРµРЅРµРј РЈproductsР¤ РєРѕС‚РѕСЂРѕРµ Р·Р°РґР°РµС‚СЃВ¤ РїРµСЂРµРјРµРЅРЅРѕР№ $items.
     return drupal_json_output(array('correct_num'=>$correct_num));
     exit;
 }
 
 function get_result_ajax($node_id, $correct_answer){
     //$node_id current node id
-	//$correct_answer количество правильных ответов
+	//$correct_answer РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂР°РІРёР»СЊРЅС‹С… РѕС‚РІРµС‚РѕРІ
 	$node_id = filter_xss($node_id);
 	$correct_answer = filter_xss($correct_answer);
     $node = node_load($node_id);
@@ -52,14 +52,14 @@ function get_result_ajax($node_id, $correct_answer){
 	$img = '';
 	$desc = '';
 	if(isset($field_results)){
-		$result_a = array();//массив хранениЯ данных резльтатов, ключ - количество правильных
+		$result_a = array();//РјР°СЃСЃРёРІ С…СЂР°РЅРµРЅРёСЏ РґР°РЅРЅС‹С… СЂРµР·Р»СЊС‚Р°С‚РѕРІ, РєР»СЋС‡ - РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂР°РІРёР»СЊРЅС‹С…
 		foreach($field_results as $field_result){
 			$entity_id = $field_result['value'];
 			$entitys = entity_load('field_collection_item', array($entity_id));
 			$correct_number = '';
 			foreach($entitys as $entity){
-				$correct_number = $entity->field_number_of_replies['und'][0]['value'];//число правильных ответов длЯ результата
-				//сравниваем количество указанное в результате, с тем что получили
+				$correct_number = $entity->field_number_of_replies['und'][0]['value'];//С‡РёСЃР»Рѕ РїСЂР°РІРёР»СЊРЅС‹С… РѕС‚РІРµС‚РѕРІ РґР»СЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
+				//СЃСЂР°РІРЅРёРІР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СѓРєР°Р·Р°РЅРЅРѕРµ РІ СЂРµР·СѓР»СЊС‚Р°С‚Рµ, СЃ С‚РµРј С‡С‚Рѕ РїРѕР»СѓС‡РёР»Рё
 				$result_a[$correct_number]['title'] = $entity->field_title_result['und'][0]['value'];
 				if(!empty($entity->field_image_result['und'][0]['uri']))
 					$result_a[$correct_number]['image'] = file_create_url($entity->field_image_result['und'][0]['uri']);
@@ -67,19 +67,19 @@ function get_result_ajax($node_id, $correct_answer){
 					$result_a[$correct_number]['desc'] = $entity->field_description_result['und'][0]['value'];
 			}
 		}
-		//сортируем массив по возрастанию, от min к max
+		//СЃРѕСЂС‚РёСЂСѓРµРј РјР°СЃСЃРёРІ РїРѕ РІРѕР·СЂР°СЃС‚Р°РЅРёСЋ, РѕС‚ min Рє max
 		ksort($result_a);
 		foreach($result_a as $key=>$result){
-			//ключ это количество правильных ответов
+			//РєР»СЋС‡ СЌС‚Рѕ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂР°РІРёР»СЊРЅС‹С… РѕС‚РІРµС‚РѕРІ
 			if($key <= $correct_answer){
 				$title = $result['title'];
 				$img = $result['image'];
 				$desc = $result['desc'];
 			}else
-				break;//если сюда вышли значит и все остальные значение не удовлетворЯт условие, поэтому выходим из foreach
+				break;//РµСЃР»Рё СЃСЋРґР° РІС‹С€Р»Рё Р·РЅР°С‡РёС‚ Рё РІСЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёРµ РЅРµ СѓРґРѕРІР»РµС‚РІРѕСЂСЏС‚ СѓСЃР»РѕРІРёРµ, РїРѕСЌС‚РѕРјСѓ РІС‹С…РѕРґРёРј РёР· foreach
 		}
 	}
-    // создание объекта JSON.
+    // СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° JSON.
     return drupal_json_output(array('title'=>$title, 'img'=>$img, 'desc'=>$desc));
     exit;
 	//
