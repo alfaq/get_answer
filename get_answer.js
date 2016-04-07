@@ -14,9 +14,9 @@
 				console.log(parent.find('.correct-green').length);
                 if(parent.find('.incorrect-red').length <=0 && parent.find('.correct-green').length <=0) {
                     if (entity_id.length > 0) {
-                        // Эта функциЯ будет выполнЯтьсЯ после того, как ajax запрос на сервер был выполнен успешно
+                        // РЃС‚Р° С„СѓРЅРєС†РёСЏ Р±СѓРґРµС‚ РІС‹РїРѕР»РЅСЏС‚СЊСЃСЏ РїРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє ajax Р·Р°РїСЂРѕСЃ РЅР° СЃРµСЂРІРµСЂ Р±С‹Р» РІС‹РїРѕР»РЅРµРЅ СѓСЃРїРµС€РЅРѕ
                         var get_correct_answer = function (data) {
-                            // Параметр "data" ЯвлЯетсЯ объектом JSON. Свойство “products” является списком товаров, который возвращается с сервера в ответ на запрос ajax.
+                            // С•Р°СЂР°РјРµС‚СЂ "data" СЏРІР»СЏРµС‚СЃСЏ РѕР±СЉРµРєС‚РѕРј JSON. вЂ”РІРѕР№СЃС‚РІРѕ РЈproductsР¤ В¤РІР»В¤РµС‚СЃВ¤ СЃРїРёСЃРєРѕРј С‚РѕРІР°СЂРѕРІ, РєРѕС‚РѕСЂС‹Р№ РІРѕР·РІСЂР°С‰Р°РµС‚СЃВ¤ СЃ СЃРµСЂРІРµСЂР° РІ РѕС‚РІРµС‚ РЅР° Р·Р°РїСЂРѕСЃ ajax.
                             //$('.title').html(data.correct_num);
                             correct_num = data.correct_num;
                             if (correct_num == answer_id) {
@@ -29,12 +29,12 @@
                             $('span.all-q').text($('span.all-q').text()*1 - 1);
                             if($('span.all-q').text()*1 <= 0){
                                 //alert('finish test');
-								//если закончили тест, то забираем количество правильных ответов из дива
+								//РµСЃР»Рё Р·Р°РєРѕРЅС‡РёР»Рё С‚РµСЃС‚, С‚Рѕ Р·Р°Р±РёСЂР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂР°РІРёР»СЊРЅС‹С… РѕС‚РІРµС‚РѕРІ РёР· РґРёРІР°
 								
                                 var get_finish_result = function (data) {
                                     //$('.title').html();
 									$('#result-test').html('<div><div class="image-field-title">'+data.title +'</div><div class="image-field-image"><img src="'+ data.img +'" /></div>'+'<div class="image-field-desc">'+data.desc+'</div></div>');
-                                    //сюда нужно вернуть тайтл, картинку и описание и все!!!!
+                                    //СЃСЋРґР° РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ С‚Р°Р№С‚Р», РєР°СЂС‚РёРЅРєСѓ Рё РѕРїРёСЃР°РЅРёРµ Рё РІСЃРµ!!!!
                                 }
 								var correct_q = $('span.all-right-q').text()*1;
                                 var nid = $('span.all-q').data('nid');
