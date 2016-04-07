@@ -1,0 +1,86 @@
+<?php
+/**
+* @file
+* A description of what your module does.
+*/
+
+/**
+ * Implementation of hook_menu().
+ */
+function get_answer_menu(){
+    $items = array();
+    $items['get/result/%'] = array(
+        'page callback' => 'get_answer_ajax', // Render HTML
+        'page arguments' => array(2),
+        'type' => MENU_CALLBACK,
+        'access arguments' => array('access content'),
+    );
+    $items['get/finish/%/%'] = array(
+        'page callback' => 'get_result_ajax', // Render HTML
+        'page arguments' => array(2,3),//node nid and count correct answer
+        'type' => MENU_CALLBACK,
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function get_answer_ajax($entity_id){
+    //$entity_id current entity id
+    //$answer_id current click answer in entity id
+	$entity_id = filter_xss($entity_id);
+    $entitys = entity_load('field_collection_item', array($entity_id));
+    $items = '';
+    $correct_num = 0;
+    foreach($entitys as $entity){
+        $correct_num = $entity->field_correct_answer['und'][0]['value'];
+        break;
+    }
+    // создание объекта JSON. ќбъект будет содержать свойство с именем УproductsФ которое задаетс€ переменной $items.
+    return drupal_json_output(array('correct_num'=>$correct_num));
+    exit;
+}
+
+function get_result_ajax($node_id, $correct_answer){
+    //$node_id current node id
+	//$correct_answer количество правильных ответов
+	$node_id = filter_xss($node_id);
+	$correct_answer = filter_xss($correct_answer);
+    $node = node_load($node_id);
+	$field_results = $node->field_result['und'];	
+	
+	$title = '';
+	$img = '';
+	$desc = '';
+	if(isset($field_results)){
+		$result_a = array();//массив хранения данных резльтатов, ключ - количество правильных
+		foreach($field_results as $field_result){
+			$entity_id = $field_result['value'];
+			$entitys = entity_load('field_collection_item', array($entity_id));
+			$correct_number = '';
+			foreach($entitys as $entity){
+				$correct_number = $entity->field_number_of_replies['und'][0]['value'];//число правильных ответов для результата
+				//сравниваем количество указанное в результате, с тем что получили
+				$result_a[$correct_number]['title'] = $entity->field_title_result['und'][0]['value'];
+				if(!empty($entity->field_image_result['und'][0]['uri']))
+					$result_a[$correct_number]['image'] = file_create_url($entity->field_image_result['und'][0]['uri']);
+				if(!empty($entity->field_description_result['und'][0]['value']))
+					$result_a[$correct_number]['desc'] = $entity->field_description_result['und'][0]['value'];
+			}
+		}
+		//сортируем массив по возрастанию, от min к max
+		ksort($result_a);
+		foreach($result_a as $key=>$result){
+			//ключ это количество правильных ответов
+			if($key <= $correct_answer){
+				$title = $result['title'];
+				$img = $result['image'];
+				$desc = $result['desc'];
+			}else
+				break;//если сюда вышли значит и все остальные значение не удовлетворят условие, поэтому выходим из foreach
+		}
+	}
+    // создание объекта JSON.
+    return drupal_json_output(array('title'=>$title, 'img'=>$img, 'desc'=>$desc));
+    exit;
+	//
+}

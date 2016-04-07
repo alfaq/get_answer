@@ -1,0 +1,6 @@
+name = Get Answer
+description = A description of what your module does.
+core = 7.x
+
+files[] = get_answer.module
+scripts[] = get_answer.min.js
